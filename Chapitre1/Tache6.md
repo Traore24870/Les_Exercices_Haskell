@@ -19,4 +19,17 @@ main = do
     print(reponse)
     
 
+ Résumé de chaque Ligne de code
 
+ 
+ additionneNombres :: Int -> Int -> Int Type : La fonction prend un Entier, puis un autre Entier, et retourne un Entier.
+ 
+ additionneNombres a b = a + b Définition : Je prends a et b et je retourne leur somme.
+ 
+ main2 :: IO () Type : Le programme de test pour cette fonction.
+ 
+ let resultat = additionneNombres 15 27 Action : Je calcule 16 + 27 (ce qui donne 43) et stocke le résultat.
+ 
+ putStrLn "Additionne 15 et 27 :" Affichage 1 : J'affiche un label.
+ 
+ print resultat Affichage 2 : J'affiche le résultat du calcul (43).
