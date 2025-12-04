@@ -1,51 +1,72 @@
--- --------------------------------------------------------------------------
--- ⏫ Tâche 8 : Fonctions d'ordre supérieur (applyTwice)
--- --------------------------------------------------------------------------
+La fonction `applyTwice` prend une fonction ($f$) et une valeur ($x$), et calcule $f(f(x))$.
+
+## 🔄 Fonction `applyTwice`
+
+```haskell
+-- Définition de la fonction 'applyTwice'.
+-- Signature : Elle prend une fonction (f) qui mappe a -> a, et une valeur (x) de type a.
+-- Elle retourne la valeur résultante, qui est aussi de type a.
 applyTwice :: (a -> a) -> a -> a
 applyTwice f x = f (f x)
 
--- Fonction utilitaire pour le test : Incrémenter de 1
-increment :: Int -> Int
-increment n = n + 1
--- --------------------------------------------------------------------------
--- ⚙ Fonction Main pour la Tâche 8
--- --------------------------------------------------------------------------
+-- Bloc principal pour tester la fonction
 main :: IO ()
 main = do
-    putStrLn "\n--- ⏫ Tâche 8 : applyTwice ---"
-    -- Test 1 : Application de l'incrémentation (increment) deux fois à 5
-    let startInc = 5
-        resultInc = applyTwice increment startInc
-        -- 5 -> increment (5) = 6 -> increment (6) = 7
-    putStrLn $ "Appliquer 'increment' deux fois à " ++ show startInc ++ " donne : " ++ show resultInc
-
-    -- Test 2 : Application d'une fonction anonyme (* 10) deux fois à 2
-    let startMul = 2
-        resultMul = applyTwice (* 10) startMul
-        -- 2 -> (* 10) = 20 -> (* 10) = 200
-    putStrLn $ "Appliquer '(* 10)' deux fois à " ++ show startMul ++ " donne : " ++ show resultMul
-
-    =======Explication des ligne code=========
-
- applyTwice :: (a -> a) -> a -> a Signature de Type Indique la structure de la fonction : elle prend une fonction (a -> a) (une fonction qui prend un type a et retourne le même type a), puis une valeur a, et retourne finalement une valeur a.
- 
- applyTwice f x = f (f x) Définition Définit le calcul. f est la fonction et x est la valeur initiale. Le corps f (f x) signifie : appliquer f à x, puis appliquer f au résultat obtenu.
-
-increment :: Int -> Int Fonction de Test Une simple fonction qui prend un entier (Int) et retourne cet entier plus un. Utilisée comme argument pour applyTwice.
-
- increment n = n + 1 Définition Met en œuvre l'opération d'ajout de 1.
- 
- main :: IO () Fonction Principale Le point d'entrée du programme. IO () indique qu'elle effectue des actions d'entrée/sortie (affichage) et ne retourne pas de valeur significative.
- 
- let startInc = 5 Test (Variable) Crée la variable locale startInc et lui assigne la valeur de départ 5 pour le premier test.
- 
- resultInc = applyTwice increment startInc Test (Appel) Appelle applyTwice. L'opération est : increment appliqué deux fois à 5, ce qui donne 7.
- 
- putStrLn $ "Appliquer 'increment'..." Affichage Affiche le résultat du Test 1. $ show resultInc convertit le nombre 7 en texte pour l'affichage.
- 
- resultMul = applyTwice (* 10) startMul Test (Lambda) Utilise applyTwice avec une fonction anonyme ((* 10)), qui multiplie par 10. Le résultat de l'application double à 2 est 200.
- 
- putStrLn $ "Appliquer '(* 10)'..." Affichage Affiche le résultat du Test 2.
-
- 
+    -- 1. Définition des fonctions de test
+    let increment :: Int -> Int
+        increment n = n + 1
+        
+    let double :: Int -> Int
+        double n = n * 2
+        
+    let initialValue = 5
     
+    putStrLn "--- Application d'une Fonction Deux Fois (applyTwice) ---"
+    
+    -- Test 1 : Appliquer 'increment' deux fois (5 -> 6 -> 7)
+    let result1 = applyTwice increment initialValue
+    putStrLn $ "Appliquer 'increment' deux fois à " ++ show initialValue ++ " : " ++ show result1
+    -- Résultat attendu : 7 (5 + 1 + 1)
+    
+    -- Test 2 : Appliquer 'double' deux fois (5 -> 10 -> 20)
+    let result2 = applyTwice double initialValue
+    putStrLn $ "Appliquer 'double' deux fois à " ++ show initialValue ++ " : " ++ show result2
+    -- Résultat attendu : 20 (5 * 2 * 2)
+    
+    -- Test 3 : Utilisation directe d'une lambda expression
+    -- (Ajouter 10 deux fois : 100 -> 110 -> 120)
+    let result3 = applyTwice (\n -> n + 10) 100
+    putStrLn $ "Appliquer '(+10)' deux fois à 100 : " ++ show result3
+    -- Résultat attendu : 120
+```
+
+-----
+
+## 💡 Explication Détaillée
+
+### 1\. Fonction d'Ordre Supérieur
+
+`applyTwice` est une **fonction d'ordre supérieur** (Higher-Order Function) car elle prend une autre fonction (`f`) comme argument.
+
+### 2\. Signature de Type
+
+```haskell
+applyTwice :: (a -> a) -> a -> a
+```
+
+  * **`(a -> a)`** : Le premier argument est une fonction qui prend une valeur de type `a` et retourne une valeur du même type `a`. C'est crucial, car la sortie de la première application de $f$ doit être compatible avec l'entrée de la deuxième application.
+  * **`-> a`** : Le deuxième argument est la valeur d'entrée ($x$), de type `a`.
+  * **`-> a`** : La fonction retourne la valeur finale, de type `a`.
+
+### 3\. Définition
+
+```haskell
+applyTwice f x = f (f x)
+```
+
+La définition est extrêmement simple et exprime directement l'intention :
+
+1.  L'expression **la plus à l'intérieur**, `f x`, est évaluée en premier.
+2.  Le résultat de `f x` est ensuite passé comme argument à l'appel de fonction **extérieur**, `f (...)`.
+
+Cette définition est l'équivalent direct de la composition de fonction $f \circ f$ appliquée à $x$, soit $(f . f) x$.
