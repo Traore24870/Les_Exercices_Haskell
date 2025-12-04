@@ -1,48 +1,89 @@
+## 🏆 HC1T4 - Tâche 4 : Composer une fonction pour traiter des données de joueurs
+
+```haskell
 import Data.List (sortBy)
 import Data.Ord (comparing)
 
-type Player = (String, Int)
-extractPlayers :: [Player] -> [Player]
-extractPlayers = id 
+-- Définition du type synonyme pour la clarté
+-- Un 'Joueur' est un tuple (Nom, Score)
+type Joueur = (String, Int)
 
-sortByScore :: [Player] -> [Player]
-sortByScore = sortBy (flip (comparing snd))
-topTrois :: [Player] -> [Player]
-topTrois = take 3
-getTopThreePlayers :: [Player] -> [Player]
-getTopThreePlayers = topTrois . sortByScore . extractPlayers
+-- 1. extractPlayers : Extrait les noms des joueurs d'une liste de Joueur
+-- Utilise la fonction map pour appliquer la fonction 'fst' (première composante du tuple)
+extractPlayers :: [Joueur] -> [String]
+extractPlayers = map fst
 
--- --- Exemples d'utilisation ---
+-- 2. sortByScore : Trie la liste des joueurs par score décroissant.
+-- Nécessite l'importation de Data.List et Data.Ord.
+sortByScore :: [Joueur] -> [Joueur]
+sortByScore = sortBy (comparing (\(_, score) -> score) `flip` )
+-- OU plus simplement pour un tri décroissant :
+-- sortByScore = sortBy (\(_, scoreA) (_, scoreB) -> compare scoreB scoreA)
+-- Nous utilisons 'flip comparing' pour inverser l'ordre par défaut (croissant) en décroissant.
 
--- Liste de données de joueurs brutes
-playersData :: [Player]
-playersData = [("Alice", 85), ("Bob", 92), ("Charlie", 78), ("David", 95), ("Eve", 88)]
+-- 3. topThree : Retourne les trois premiers éléments d'une liste.
+-- Utilise la fonction 'take'
+topThree :: [a] -> [a]
+topThree = take 3
 
--- Appel de la fonction composée
+-- Composition : getTopThreePlayers
+-- Composition de fonctions pour appliquer les trois étapes dans l'ordre.
+-- L'ordre des fonctions est de droite à gauche : sortByScore -> topThree -> extractPlayers
+-- (Non, l'ordre DOIT être : sortByScore -> topThree, puis extractPlayers est appliqué au résultat)
+-- L'ordre correct des étapes est : Trier -> Prendre les 3 -> Extraire les noms.
+getTopThreePlayers :: [Joueur] -> [String]
+getTopThreePlayers = extractPlayers . topThree . sortByScore
+
+-- Bloc principal pour tester la fonction
 main :: IO ()
 main = do
-    putStrLn "Liste complète des joueurs :"
-    print playersData
-    putStrLn "\nLes trois meilleurs joueurs (triés par score décroissant) :"
-    print (getTopThreePlayers playersData)
+    let listeDesJoueurs = 
+          [ ("Alice", 150)
+          , ("Bob", 200)
+          , ("Charlie", 90)
+          , ("David", 300)
+          , ("Eve", 120)
+          ] :: [Joueur]
 
+    putStrLn "--- Composition des Fonctions de Classement ---"
+    
+    -- Test direct de la fonction composée
+    let topTrois = getTopThreePlayers listeDesJoueurs
+    putStrLn "Liste des joueurs par score (David: 300, Bob: 200, Alice: 150, ...)"
+    putStrLn $ "\nLes 3 meilleurs joueurs sont : " ++ show topTrois
+    -- Résultat attendu : ["David", "Bob", "Alice"]
+```
 
-Explication du code
+-----
 
-extractPlayers :: [Player] -> [Player],La signature de type indique qu'elle prend une liste de Player et retourne une liste de Player.
+## 🧐 Explication de la Composition
 
-extractPlayers = id,"L'implémentation utilise la fonction identité (id). Cela signifie que, dans ce cas précis, la fonction ne fait que retourner
+La composition finale est :
 
-la liste d'entrée telle quelle. Cela est fait pour s'adapter à l'énoncé de la tâche, où elle aurait normalement transformé des données brutes (non-Player) en format Player."
+```haskell
+getTopThreePlayers = extractPlayers . topThree . sortByScore
+```
 
-sortByScore :: [Player] -> [Player],Prend une liste de Player et retourne une liste de Player (triée).
+Comme vous l'avez appris, l'opérateur de composition **`.`** applique les fonctions de **droite à gauche**.
 
-sortByScore = sortBy (flip (comparing snd)),"C'est l'étape de tri. Elle utilise des fonctions de la bibliothèque Data.List : * sortBy : La fonction principale de tri. * comparing snd : Crée une fonction de comparaison qui se concentre uniquement sur le deuxième élément du tuple (le score). * flip : Inverse l'ordre de la fonction de comparaison, ce qui permet d'obtenir un tri décroissant (du score le plus élevé au plus faible)."
+Pour un appel de la fonction comme `getTopThreePlayers listeDesJoueurs`, voici les étapes d'exécution :
 
-topTrois :: [Player] -> [Player],Prend une liste de Player et retourne une liste de Player (contenant au maximum 3 joueurs).
+1.  **`sortByScore` (la plus à droite) :**
 
-topTrois = take 3,Utilise la fonction standard take pour sélectionner les 3 premiers éléments de la liste triée.
+      * **Action :** Reçoit la liste complète des joueurs `[("Alice", 150), ..., ("Eve", 120)]`.
+      * **Résultat :** Elle trie la liste par score décroissant.
+      * **Sortie :** `[("David", 300), ("Bob", 200), ("Alice", 150), ("Eve", 120), ("Charlie", 90)]`
 
-getTopThreePlayers :: [Player] -> [Player],"La fonction principale, elle prend la liste initiale et retourne le top 3."
+2.  **`topThree` (au milieu) :**
 
-getTopThreePlayers = topTrois . sortByScore . extractPlayers,C'est le cœur de la solution : la composition de fonctions. L'opérateur point (.) enchaîne les fonctions. L'exécution se fait de droite à gauche (comme f(g(x))). 1. extractPlayers est appliquée aux données brutes. 2. Le résultat est passé à sortByScore (Tri). 3. Le résultat est passé à topTrois (Sélection des 3 premiers).
+      * **Action :** Reçoit la liste triée.
+      * **Résultat :** Elle prend les 3 premiers éléments de cette liste.
+      * **Sortie :** `[("David", 300), ("Bob", 200), ("Alice", 150)]`
+
+3.  **`extractPlayers` (la plus à gauche) :**
+
+      * **Action :** Reçoit la liste des 3 meilleurs joueurs (tuples).
+      * **Résultat :** Elle utilise `map fst` pour extraire uniquement la première composante de chaque tuple (le nom).
+      * **Sortie :** `["David", "Bob", "Alice"]`
+
+Cette composition crée un pipeline de données très lisible et efficace, où la sortie d'une fonction devient l'entrée de la fonction suivante.
