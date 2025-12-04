@@ -1,4 +1,4 @@
-## 📐 Fonction Pure `circleArea`
+## 📐HC1T2 - Tâche 2 : Exemple de fonction pure
 
 ```haskell
 -- Pour utiliser la constante 'pi', nous devons importer le module Data.
