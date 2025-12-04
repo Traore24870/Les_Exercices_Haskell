@@ -1,20 +1,48 @@
---Fonction circleArea qui calcule l'air
+## 📐 Fonction Pure `circleArea`
 
-circleArea :: Floating a=>a->a
-circleArea r= pi*r*r
+```haskell
+-- Pour utiliser la constante 'pi', nous devons importer le module Data.
+import Data.Maybe
 
-main :: IO()
+-- Définition de la fonction circleArea.
+-- Elle prend un type a (qui doit être une instance de Floating pour la multiplication et pi)
+-- et retourne un résultat du même type.
+circleArea :: Floating a => a -> a
+circleArea r = pi * r * r
+-- Alternativement, on peut utiliser l'opérateur d'élévation à la puissance (**) :
+-- circleArea r = pi * (r ** 2)
+
+-- Bloc main pour tester la fonction
+main :: IO ()
 main = do
-     print(circleArea 4)
+    let rayon1 = 5.0 :: Double
+    let rayon2 = 12.5 :: Float
+    
+    putStrLn "--- Calcul de l'Aire d'un Cercle (Fonction Pure) ---"
+    
+    putStrLn $ "Rayon 5.0 (Double) | Aire = " ++ show (circleArea rayon1)
+    putStrLn $ "Rayon 12.5 (Float) | Aire = " ++ show (circleArea rayon2)
+```
 
-  Code Résumé Simple
-  
- circleArea :: Floating a => a -> a Type : La fonction circleArea prend un nombre à virgule (le rayon) et retourne un nombre à virgule (l'aire).
+-----
 
- circleArea r = pi*r*r Définition : Pour calculer l'aire, je prends le rayon (r) et je fais pi*r*r.
+## 🔬 Explication de la Pureté
 
- main :: IO () Type : Le programme principal (main) va effectuer une action d'entrée/sortie (comme afficher quelque chose).
+La fonction `circleArea` est un exemple classique de **fonction pure** en Haskell pour les raisons suivantes :
 
- main = do Début du Programme : Voici la liste des actions à effectuer, dans l'ordre :
+1.  **Absence d'Effets Secondaires (No Side Effects) :**
 
- print(circleArea 4) Action : Affiche à l'écran le résultat du calcul de l'aire pour un rayon de 4.
+      * La fonction se contente de calculer et de retourner une valeur.
+      * Elle **ne modifie pas** l'état du programme (par exemple, elle n'écrit pas dans un fichier, ne met pas à jour une base de données, et n'effectue aucune opération d'entrée/sortie comme `putStrLn`).
+
+2.  **Dépendance Exclusive aux Entrées (Input Dependency) :**
+
+      * Le résultat de `circleArea` dépend **uniquement** de son argument d'entrée, le rayon `r`.
+      * **Aucune dépendance externe :** Elle n'accède à aucune variable globale, à aucune heure système, ni à aucune entrée utilisateur pour déterminer son résultat.
+      * **Transparence Référentielle :** Si vous appelez `circleArea 5.0` dix fois, vous obtiendrez **toujours** le même résultat exact.
+
+### Signature de Type : `Floating a => a -> a`
+
+  * **`Floating a`** : Indique que le type `a` doit appartenir à la classe de types `Floating` (nombres à virgule flottante), car l'opération utilise la constante **$\pi$** et nécessite des multiplications de nombres non entiers.
+  * **`a -> a`** : La fonction prend une valeur de type `a` (le rayon) et retourne une valeur du même type `a` (l'aire).
+
