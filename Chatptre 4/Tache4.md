@@ -1,4 +1,3 @@
-
 HC4T4 - Tâche 4 : Réécrire spécialAnniversaire avec le pattern matching
 ---
 Code
@@ -21,7 +20,6 @@ main = do
 
 ``` 
 ---
-
 ## Explication du code
 
 ### 1. La définition des motifs (Patterns)
