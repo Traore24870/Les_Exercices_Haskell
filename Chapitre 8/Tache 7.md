@@ -48,13 +48,3 @@ L'avantage de cette approche est que vous pouvez traiter les chiens et les chats
 
 ---
 
-### Résumé de vos acquis (HC8T1 à HC8T7)
-
-Félicitations ! À travers ces exercices, vous avez couvert les piliers de la modélisation de données en Haskell :
-
-1. **Alias (`type`)** : Pour la clarté.
-2. **Types Sommes (`data A | B`)** : Pour représenter des choix.
-3. **Enregistrements (`{field :: Type}`)** : Pour structurer des objets complexes.
-4. **Tuples (`(a, b)`)** : Pour grouper des données simples.
-5. **Pattern Matching** : Pour extraire et utiliser ces données intelligemment.
-
